@@ -30,7 +30,9 @@ i = 2 # pick the sample (column), this will eventually be a for loop
 seq <- sequences[,2]
 my_fasta_sub <- seq[names(seq)]
 write.fasta(sequences = seq, names = names(my_fasta_sub), nbchar = 80, file.out = "example.fasta")
-print("hello charlotte")
+
+
+print("hello Josh")
 
 
 
