@@ -1,12 +1,12 @@
 ## Read in the data and references ##
 ## Set your working directory to Malaria if you're using GitHub Desktop ##
-library("seqinr")
-reference.genome <- read.fasta("LR605956.fasta", as.string=TRUE, seqonly=TRUE)
-ref <- read.table("ref.tab", header=TRUE, sep="\t")
-non <- read.table("non.tab", header=TRUE, sep="\t")
-var <- read.table("var.tab", header=TRUE, sep="\t")
+#library("seqinr")
+#reference.genome <- read.fasta("Data/LR605956.fasta", as.string=TRUE, seqonly=TRUE)
+#ref <- read.table("Data/ref.tab", header=TRUE, sep="\t")
+#non <- read.table("Data/non.tab", header=TRUE, sep="\t")
+#var <- read.table("Data/var.tab", header=TRUE, sep="\t")
 
-g.c <- unlist(strsplit(unlist(reference.genome),"")) # converts to vector
+#g.c <- unlist(strsplit(unlist(reference.genome),"")) # converts to vector
 
 
 ## Sequence Writer Script ##
@@ -32,20 +32,29 @@ for(i in 1:length(test.places)) # cycle thru our test places
 {
   for (j in 1:length(ref[,1])) # cycle through all positions on genome
   {
-    if((nchar(var[j,3]) == 1) && (nchar(var[j,4]) == 1)) # restricts us to just SNPs
+    if((nchar(as.character(var[j,3])) == 1) && (nchar(as.character(var[j,4])) == 1)) # restricts us to just SNPs
     {
       pos <- ref[j,2] # which nucleotide does the position start on?
       if(ref[j,test.places[i]+2] <= non[j,test.places[i]+2]) # does the alternative outweigh the reference?
       {
-        sequences.test[pos,test.places[i]] <- var[j,4] # change the "pos" position of the ith genome to the alt nucleotide (truncated)
+        sequences.test[pos,i] <- as.character(var[j,4]) # change the "pos" position of the ith genome to the alt nucleotide (truncated)
       } # else keep the reference
     }
   }
 }
 
-# seq <- sequences[,2]
-# my_fasta_sub <- seq[names(seq)]
-# write.fasta(sequences = seq, names = names(my_fasta_sub), nbchar = 80, file.out = "example.fasta")
+sample.names <- names(ref)
+print(sample.names[test.places[2]+2])
+
+i <- 1
+this.sample <- sample.names[test.places[i]+2]
+out.string <- paste('>',this.sample,sep="")
+#out.seq <- sequences.test[,i]
+file.name <- paste(this.sample,".fasta",sep="")
+out.seq <- paste(sequences.test[,i], sep="", collapse="")
+write.table(file=file.name,x=out.string,col.names=FALSE,row.names=FALSE,sep="",quote=FALSE)
+write.table(file=file.name,x=out.seq,col.names=FALSE,row.names=FALSE,sep="",quote=FALSE,append=TRUE)
+
 
 
 
